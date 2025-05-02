@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #ff5722;
+            --dark: #212121;
+            --light: #ffffff;
+            --gray: #f5f5f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gray);
+            background-image: url('/static/images/cartbg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeIn 1s;
+        }
+
+        .page-title {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            color: var(--primary);
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary);
+            animation: widthGrow 1.5s ease;
+        }
+
+        @keyframes widthGrow {
+            from { width: 0; }
+            to { width: 80px; }
+        }
+
+        .cart-section {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin: 40px 0;
+            transform-origin: center;
+            animation: zoomIn 0.6s;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            animation: slideInLeft 0.5s;
+        }
+
+        .cart-item:hover {
+            transform: translateX(5px);
+            background-color: rgba(255, 87, 34, 0.05);
+            border-radius: 8px;
+        }
+
+        .cart-item img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-right: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-details h4 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .cart-item-details p {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .customization-list {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .customization-list li {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed rgba(255, 87, 34, 0.3);
+        }
+
+        .total-section h3 {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .total-price {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .payment-section {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin: 40px 0;
+            transform-origin: center;
+            animation: zoomIn 0.8s;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .payment-method-item {
+            position: relative;
+            margin: 10px;
+        }
+
+        .payment-method-item input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .payment-method-item label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method-item label:hover {
+            border-color: var(--primary);
+        }
+
+        .payment-method-item input:checked + label {
+            border-color: var(--primary);
+            background-color: rgba(255, 87, 34, 0.1);
+            transform: scale(1.05);
+        }
+
+        .payment-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .payment-option {
+            font-weight: 500;
+        }
+
+        .form-container {
+            margin-top: 20px;
+            animation: fadeIn 0.5s;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            animation: fadeInUp 0.5s;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.2);
+            outline: none;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-icon {
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--light);
+        }
+
+        .btn-primary:hover {
+            background-color: #e64a19;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(255, 87, 34, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(255, 87, 34, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(255, 87, 34, 0.1);
+        }
+
+        .btn-link {
+            background-color: transparent;
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-link:hover {
+            text-decoration: underline;
+            transform: translateX(3px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: var(--light);
+            margin: 15vh auto 0;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.5s;
+            text-align: center;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            animation: scaleIn 0.5s;
+        }
+
+        .success-checkmark::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -60%) rotate(45deg);
+            width: 25px;
+            height: 50px;
+            border-right: 5px solid white;
+            border-bottom: 5px solid white;
+        }
+
+        .modal h2 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .modal p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeIn 1s;
+        }
+
+        .empty-cart i {
+            font-size: 60px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart p {
+            color: #888;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        /* Enhanced Rating Sunflowers */
+        .rating-sunflower {
+            font-size: 40px;
+            color: #ffd700;
+            cursor: pointer;
+            margin: 0 8px;
+            transition: all 0.3s, transform 0.2s;
+            filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3));
+        }
+
+        .rating-sunflower:hover {
+            transform: scale(1.3);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.5));
+        }
+
+        .rating-sunflower.active {
+            color: #ff8c00;
+            transform: scale(1.2);
+            filter: drop-shadow(0 4px 8px rgba(255, 140, 0, 0.5));
+        }
+
+        .rating-sunflower.active:hover {
+            transform: scale(1.4);
+        }
+
+        /* Enhanced Feedback Textbox */
+        .feedback-input {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            margin-top: 15px;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+
+        .feedback-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.2);
+            outline: none;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .feedback-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .rating-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #rating-text {
+            margin: 10px 0;
+            font-weight: 500;
+            color: var(--dark);
+            min-height: 24px;
+        }
+
+        .redirect-message {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        /* Animation delays for cart items */
+        .cart-item:nth-child(1) { animation-delay: 0.1s; }
+        .cart-item:nth-child(2) { animation-delay: 0.2s; }
+        .cart-item:nth-child(3) { animation-delay: 0.3s; }
+        .cart-item:nth-child(4) { animation-delay: 0.4s; }
+        .cart-item:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Ripple effect for buttons */
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+        }
+
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+            opacity: 1;
+            transition: width 0.5s, height 0.5s, opacity 0.5s;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .payment-methods {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .payment-method-item {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .feedback-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .feedback-buttons .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">Your Shopping Cart</h1>
+
+        <div class="cart-section" id="cart-items-container">
+            <!-- Cart items will be dynamically inserted here -->
+        </div>
+
+        <div class="payment-section">
+            <h3 class="section-title">Payment Method</h3>
+            <div class="payment-methods">
+                <div class="payment-method-item">
+                    <input type="radio" id="cod" name="payment-method" value="cod" checked>
+                    <label for="cod">
+                        <i class="fas fa-money-bill-wave payment-icon"></i>
+                        <span class="payment-option">Cash on Delivery</span>
+                    </label>
+                </div>
+
+                <div class="payment-method-item">
+                    <input type="radio" id="card" name="payment-method" value="card">
+                    <label for="card">
+                        <i class="fas fa-credit-card payment-icon"></i>
+                        <span class="payment-option">Credit/Debit Card</span>
+                    </label>
+                </div>
+
+                <div class="payment-method-item">
+                    <input type="radio" id="upi" name="payment-method" value="upi">
+                    <label for="upi">
+                        <i class="fas fa-mobile-alt payment-icon"></i>
+                        <span class="payment-option">UPI</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="card-payment-form" class="form-container" style="display: none;">
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456">
+                    <small class="error-message" id="cardNumberError"></small>
+                </div>
+                <div class="form-group">
+                    <label for="expiry">Expiry Date</label>
+                    <input type="text" id="expiry" maxlength="5" placeholder="MM/YY">
+                    <small class="error-message" id="expiryError"></small>
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" maxlength="4" placeholder="123">
+                    <small class="error-message" id="cvvError"></small>
+                </div>
+            </div>
+
+            <div id="upi-payment-form" class="form-container" style="display: none;">
+                <div class="form-group">
+                    <label for="upiID">UPI ID</label>
+                    <input type="text" id="upiID" placeholder="yourupi@bank">
+                    <small class="error-message" id="upiIDError"></small>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button id="clear-cart" class="btn btn-outline">
+                <i class="fas fa-trash-alt btn-icon"></i>Clear Cart
+            </button>
+            <button onclick="processPayment()" class="btn btn-primary">
+                <i class="fas fa-check-circle btn-icon"></i>Proceed to Pay
+            </button>
+            <a href="index.html" class="btn btn-link">
+                <i class="fas fa-arrow-left btn-icon"></i>Continue Shopping
+            </a>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="success-checkmark"></div>
+            <h2>Payment Successful!</h2>
+            <p>Your order has been placed successfully.</p>
+            <div class="redirect-message">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Preparing feedback form...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <h2>Rate Your Experience</h2>
+            <p>We'd love to hear about your shopping experience!</p>
+
+            <div class="rating-container">
+                <div class="rating">
+                    <i class="fas fa-sun rating-sunflower" data-rating="1"></i>
+                    <i class="fas fa-sun rating-sunflower" data-rating="2"></i>
+                    <i class="fas fa-sun rating-sunflower" data-rating="3"></i>
+                    <i class="fas fa-sun rating-sunflower" data-rating="4"></i>
+                    <i class="fas fa-sun rating-sunflower" data-rating="5"></i>
+                </div>
+                <div id="rating-text">Select your rating</div>
+
+                <textarea class="feedback-input" placeholder="Share your feedback (optional)"></textarea>
+
+                <div class="feedback-buttons">
+                    <button onclick="skipFeedback()" class="btn btn-outline">Skip</button>
+                    <button onclick="submitFeedback()" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            updateCartDisplay();
+
+            document.querySelectorAll('input[name="payment-method"]').forEach((radio) => {
+                radio.addEventListener("change", function () {
+                    document.getElementById("card-payment-form").style.display =
+                        this.value === "card" ? "block" : "none";
+                    document.getElementById("upi-payment-form").style.display =
+                        this.value === "upi" ? "block" : "none";
+                });
+            });
+
+            document.getElementById("clear-cart").addEventListener("click", function () {
+                let cartItems = document.querySelectorAll(".cart-item");
+                let delay = 0;
+
+                cartItems.forEach((item) => {
+                    setTimeout(() => {
+                        item.style.opacity = "0";
+                        item.style.transform = "translateX(-20px)";
+                    }, delay);
+                    delay += 100;
+                });
+
+                setTimeout(() => {
+                    localStorage.removeItem("cart");
+                    localStorage.removeItem("cartItem");
+                    updateCartDisplay();
+                    updateCartCounter();
+                }, delay + 300);
+            });
+
+            // Format credit card number with spaces
+            document.getElementById("cardNumber").addEventListener("input", function (e) {
+                let value = e.target.value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+                let formattedValue = "";
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += " ";
+                    }
+                    formattedValue += value[i];
+                }
+                e.target.value = formattedValue;
+            });
+
+            // Format expiry date with slash
+            document.getElementById("expiry").addEventListener("input", function (e) {
+                let value = e.target.value.replace(/\D/g, "");
+                if (value.length > 2) {
+                    value = value.slice(0, 2) + "/" + value.slice(2);
+                }
+                e.target.value = value;
+            });
+
+            // Set up rating sunflowers
+            setupRatingSunflowers();
+        });
+
+        function updateCartDisplay() {
+            // Get both regular cart and customized items
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let cartItem = JSON.parse(localStorage.getItem("cartItem"));
+            const cartContainer = document.getElementById("cart-items-container");
+            
+            // Clear the container first
+            cartContainer.innerHTML = '';
+            
+            let totalPrice = 0;
+            let hasItems = false;
+
+            // Display customized product if exists
+            if (cartItem) {
+                hasItems = true;
+                const { product, customization } = cartItem;
+                const basePrice = parseFloat(product.price) || 0;
+                const customizationTotal = customization.reduce((total, item) => {
+                    return total + (item.type === "text" ? 50 : 100); // Customization prices
+                }, 0);
+                const itemTotal = basePrice + customizationTotal;
+                totalPrice += itemTotal;
+
+                cartContainer.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${product.image}" alt="${product.name}">
+                        <div class="cart-item-details">
+                            <h4>${product.name} (Customized)</h4>
+                            <p>Base Price: ₹${basePrice.toFixed(2)}</p>
+                            <div class="customization-details">
+                                <p><strong>Customizations:</strong></p>
+                                <ul class="customization-list">
+                                    ${customization.map(item => `
+                                        <li>${item.type === "text" ? 
+                                            `Text: "${item.content}"` : 
+                                            `Image`} - ₹${item.type === "text" ? 50 : 100}</li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                            <p>Item Total: ₹${itemTotal.toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Display regular products
+            if (cart.length > 0) {
+                hasItems = true;
+                cart.forEach(item => {
+                    const itemPrice = parseFloat(item.price) * (item.quantity || 1);
+                    totalPrice += itemPrice;
+                    
+                    cartContainer.innerHTML += `
+                        <div class="cart-item">
+                            <img src="${item.image}" alt="${item.name}">
+                            <div class="cart-item-details">
+                                <h4>${item.name}</h4>
+                                <p>Price: ₹${item.price} × ${item.quantity || 1}</p>
+                                <p>Item Total: ₹${itemPrice.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            if (!hasItems) {
+                cartContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Your cart is empty</p>
+                        <a href="index.html" class="btn btn-primary">
+                            <i class="fas fa-shopping-bag btn-icon"></i>Start Shopping
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Add total section
+            cartContainer.innerHTML += `
+                <div class="total-section">
+                    <h3>Total Amount</h3>
+                    <span class="total-price">₹${totalPrice.toFixed(2)}</span>
+                </div>
+            `;
+
+            // Apply animations
+            setTimeout(() => {
+                document.querySelectorAll(".cart-item").forEach((item, index) => {
+                    item.style.animationDelay = index * 0.1 + "s";
+                    item.classList.add("animate__animated", "animate__fadeInLeft");
+                });
+            }, 100);
+        }
+
+        function processPayment() {
+            // Check if the cart is empty
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const cartItem = JSON.parse(localStorage.getItem("cartItem"));
+            
+            if (cart.length === 0 && !cartItem) {
+                alert("Your cart is empty. Please add items to proceed.");
+                return;
+            }
+
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+
+            // Validate payment details based on the selected method
+            if (paymentMethod === "card") {
+                if (!validateCardPayment()) {
+                    return;
+                }
+            } else if (paymentMethod === "upi") {
+                if (!validateUpiPayment()) {
+                    return;
+                }
+            }
+
+            // Show success modal first
+            showSuccessModal();
+            
+            // Then show feedback modal after 3 seconds
+            setTimeout(showFeedbackModal, 3000);
+            
+            // Clear the cart
+            localStorage.removeItem("cart");
+            localStorage.removeItem("cartItem");
+            updateCartCounter();
+        }
+
+        function showSuccessModal() {
+            let successModal = document.getElementById("successModal");
+            successModal.style.display = "block";
+            setTimeout(() => {
+                successModal.classList.add("active");
+            }, 10);
+        }
+
+        function showFeedbackModal() {
+            // First hide the success modal
+            let successModal = document.getElementById("successModal");
+            successModal.classList.remove("active");
+            setTimeout(() => {
+                successModal.style.display = "none";
+            }, 300);
+            
+            // Then show the feedback modal
+            let feedbackModal = document.getElementById("feedbackModal");
+            feedbackModal.style.display = "block";
+            setTimeout(() => {
+                feedbackModal.classList.add("active");
+            }, 10);
+        }
+
+        function validateCardPayment() {
+            const cardNumber = document.getElementById("cardNumber").value.replace(/\s+/g, "");
+            const expiry = document.getElementById("expiry").value;
+            const cvv = document.getElementById("cvv").value;
+
+            // Clear previous error messages
+            document.getElementById("cardNumberError").textContent = "";
+            document.getElementById("expiryError").textContent = "";
+            document.getElementById("cvvError").textContent = "";
+
+            let isValid = true;
+
+            if (!cardNumber || cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+                document.getElementById("cardNumberError").textContent = "Please enter a valid 16-digit card number.";
+                isValid = false;
+            }
+
+            if (!expiry || !/^\d{2}\/\d{2}$/.test(expiry)) {
+                document.getElementById("expiryError").textContent = "Please enter a valid expiry date (MM/YY).";
+                isValid = false;
+            }
+
+            if (!cvv || cvv.length < 3 || cvv.length > 4 || !/^\d+$/.test(cvv)) {
+                document.getElementById("cvvError").textContent = "Please enter a valid CVV (3 or 4 digits).";
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function validateUpiPayment() {
+            const upiID = document.getElementById("upiID").value;
+
+            // Clear previous error message
+            document.getElementById("upiIDError").textContent = "";
+
+            if (!upiID || !/^[\w.-]+@[\w.-]+$/.test(upiID)) {
+                document.getElementById("upiIDError").textContent = "Please enter a valid UPI ID.";
+                return false;
+            }
+
+            return true;
+        }
+
+        function setupRatingSunflowers() {
+            const sunflowers = document.querySelectorAll('.rating-sunflower');
+            const ratingText = document.getElementById('rating-text');
+            let currentRating = 0;
+
+            const ratingTexts = [
+                "Select your rating",
+                "Very Poor",
+                "Poor",
+                "Average",
+                "Good",
+                "Excellent"
+            ];
+
+            sunflowers.forEach(sunflower => {
+                sunflower.addEventListener('click', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    currentRating = rating;
+
+                    sunflowers.forEach(s => {
+                        const sunflowerRating = parseInt(s.getAttribute('data-rating'));
+                        if (sunflowerRating <= rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+
+                    ratingText.textContent = ratingTexts[rating];
+                });
+
+                sunflower.addEventListener('mouseover', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+
+                    sunflowers.forEach(s => {
+                        const sunflowerRating = parseInt(s.getAttribute('data-rating'));
+                        if (sunflowerRating <= rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+
+                    ratingText.textContent = ratingTexts[rating];
+                });
+
+                sunflower.addEventListener('mouseout', function() {
+                    sunflowers.forEach(s => {
+                        const sunflowerRating = parseInt(s.getAttribute('data-rating'));
+                        if (sunflowerRating <= currentRating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+
+                    ratingText.textContent = currentRating > 0 ? ratingTexts[currentRating] : ratingTexts[0];
+                });
+            });
+        }
+
+        function submitFeedback() {
+            const activeSunflowers = document.querySelectorAll('.rating-sunflower.active');
+            const rating = activeSunflowers.length;
+            const feedbackText = document.querySelector('.feedback-input').value;
+            const submitBtn = document.querySelector('#feedbackModal .btn-primary');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            // Submit feedback to backend
+            fetch('http://127.0.0.1:5000/submit_feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rating: rating,
+                    comment: feedbackText
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Feedback submitted:", data);
+                closeFeedbackAndRedirect();
+            })
+            .catch(error => {
+                console.error("Error submitting feedback:", error);
+                // Even if feedback fails, still proceed
+                closeFeedbackAndRedirect();
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        }
+
+        function skipFeedback() {
+            closeFeedbackAndRedirect();
+        }
+
+        function closeFeedbackAndRedirect() {
+            let feedbackModal = document.getElementById("feedbackModal");
+            feedbackModal.classList.remove('active');
+
+            setTimeout(() => {
+                feedbackModal.style.display = "none";
+                // Redirect to home page after 1 second
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1000);
+            }, 300);
+        }
+
+        function updateCartCounter() {
+            const counter = document.getElementById('cart-counter');
+            if (counter) {
+                const cart = JSON.parse(localStorage.getItem("cart")) || [];
+                const cartItem = JSON.parse(localStorage.getItem("cartItem"));
+                
+                const regularItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                const totalItems = regularItems + (cartItem ? 1 : 0);
+                
+                counter.textContent = totalItems;
+                counter.style.display = totalItems > 0 ? 'inline-block' : 'none';
+            }
+        }
+    </script>
+</body>
+</html>

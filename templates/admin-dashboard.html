@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - MerchStore</title>
+    <link rel="stylesheet" href="/static/admin-dashboard.css">
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Admin Panel</h1>
+        <nav>
+            <a href="/templates/index.html">Back to Store</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Add Product Form -->
+        <section id="add-product">
+            <h2>Add New Product</h2>
+            <form id="addProductForm">
+                <label for="name">Product Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea>
+
+                <label for="price">Price (₹):</label>
+                <input type="number" id="price" name="price" step="0.01" required>
+
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" required>
+
+                <label for="image_url">Image URL:</label>
+                <input type="text" id="image_url" name="image_url" required>
+
+                <button type="submit">Add Product</button>
+            </form>
+        </section>
+
+        <!-- Product List -->
+        <section id="product-list">
+            <h2>Product List</h2>
+            <div id="productsContainer">
+                <!-- Products will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- Saved Designs -->
+        <section id="saved-designs">
+            <h2>Saved Designs</h2>
+            <div id="designsContainer">
+                <!-- Saved designs will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- Feedback Analysis -->
+        <section id="feedback-analysis">
+            <h2>Customer Feedback Analysis</h2>
+            <div class="chart-container">
+                <canvas id="feedbackPieChart"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/admin-dashboard.js"></script>
+    <script>
+        // Fetch saved designs from the backend
+        async function fetchDesigns() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/get_designs');
+                const designs = await response.json();
+                const designsContainer = document.getElementById('designsContainer');
+                designsContainer.innerHTML = '';
+
+                designs.forEach(design => {
+                    const designCard = document.createElement('div');
+                    designCard.className = 'design-card';
+                    designCard.innerHTML = `
+                        <p><strong>Product ID:</strong> ${design.product_id}</p>
+                        <p><strong>Created At:</strong> ${design.created_at}</p>
+                        <img src="${design.image_data}" alt="Design Image" />
+                    `;
+                    designsContainer.appendChild(designCard);
+                });
+            } catch (error) {
+                console.error('Error fetching designs:', error);
+            }
+        }
+
+        // Load designs when the page loads
+        window.onload = fetchDesigns;
+    </script>
+</body>
+</html>

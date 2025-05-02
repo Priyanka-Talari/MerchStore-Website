@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Add your existing CSS links here -->
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">My Profile</h1>
+        
+        <div class="profile-section">
+            <div class="user-info">
+                <div class="profile-pic">
+                    <img id="user-photo" src="default-profile.png" alt="Profile Picture">
+                </div>
+                <div class="user-details">
+                    <h2 id="user-name">Loading...</h2>
+                    <p id="user-email">user@example.com</p>
+                    <p>Member since: <span id="join-date">...</span></p>
+                </div>
+            </div>
+            
+            <div class="profile-actions">
+                <button onclick="editProfile()" class="btn btn-outline">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </button>
+                <button onclick="logout()" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        
+        <div class="activity-section">
+            <h2><i class="fas fa-history"></i> My Recent Activity</h2>
+            <div id="activity-feed" class="activity-feed">
+                <!-- Activities will be loaded here -->
+            </div>
+        </div>
+        
+        <div class="designs-section">
+            <h2><i class="fas fa-swatchbook"></i> My Saved Designs</h2>
+            <div id="saved-designs" class="designs-grid">
+                <!-- Saved designs will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add your existing scripts + Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>
